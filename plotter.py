@@ -1,3 +1,4 @@
+import pandas as pd
 import plotly
 import plotly.graph_objects as go
 
@@ -14,7 +15,7 @@ layout = dict(
 )
 
 
-def create_plot(df, columns):
+def create_plot(df: pd.DataFrame, columns: list):
     data = [
         go.Line(
             x=df.index,
@@ -27,7 +28,7 @@ def create_plot(df, columns):
     return graphJSON
 
 
-def create_net_plot(df):
+def create_net_plot(df: pd.DataFrame):
     fig = go.Figure()
 
     colors = ["green" if value > 0 else "red" for value in df.values]
@@ -54,7 +55,7 @@ def create_net_plot(df):
     return fig.to_html(full_html=False)
 
 
-def create_adm_layoff_plot(df):
+def create_adm_layoff_plot(df: pd.DataFrame):
     # Plot the graph using Plotly Express
     fig = go.Figure()
 

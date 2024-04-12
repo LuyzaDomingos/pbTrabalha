@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 btCom.innerHTML = "Comércio" + '<br><b>' + response["Comércio"] + '</b>';
             },
             error: function(xhr) {
-                console.log("Erro ao obter o valor da variável 2");
+                console.log("Erro ao obter o valor de admissões");
             }
         });
     });
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 btCom.innerHTML = "Comércio" + '<br><b>' + response["Comércio"] + '</b>';
             },
             error: function(xhr) {
-                console.log("Erro ao obter o valor da variável 2");
+                console.log("Erro ao obter o número de desligamentos");
             }
         });
     });
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 btCom.innerHTML = "Comércio" + '<br><b>' + response["Comércio"] + '</b>';
             },
             error: function(xhr) {
-                console.log("Erro ao obter o valor da variável 2");
+                console.log("Erro ao obter o valor de saldo 2");
             }
         });
     });
@@ -109,3 +109,35 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+var lastSelectedGroup = 'Agropecuária';
+function updateChart(event, group) {
+    // Check if the selected chart type is the same as the last selected one
+    if (group === lastSelectedGroup) {
+        console.log('Same group, no update needed');
+        return false;
+    }
+    lastSelectedGroup = group;
+
+    $.ajax({
+        url: `/plot/admlayoff/${group}`,
+        type: 'GET',
+        success: function(data) {
+            $('#chart1').html(data.plot_html);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error updating chart:', status, error);
+        }
+    });
+
+    $.ajax({
+        url: `/plot/net/${group}`,
+        type: 'GET',
+        success: function(data) {
+            $('#chart2').html(data.plot_html);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error updating chart:', status, error);
+        }
+    });
+}

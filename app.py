@@ -13,8 +13,8 @@ def index():
 
 @app.route('/all/<selected_date>')
 def general(selected_date: str = "2024-02-01"):
-    stats = dm.adm_layoffs[dm.adm_layoffs["competênciamov"] ==
-                        selected_date].astype({"competênciamov": str}).to_dict(orient="records")
+    stats = dm.adm_layoffs_series[dm.adm_layoffs_series["competênciamov"] ==
+                                  selected_date].astype({"competênciamov": str}).to_dict(orient="records")
     if len(stats) > 0:
         return render_template('index.html',
                                date=selected_date,
@@ -22,8 +22,8 @@ def general(selected_date: str = "2024-02-01"):
                                       if str(date).split("T")[0] != selected_date],
                                # cities=["Paraíba"] + [city for city in dm.cities],
                                stats=stats[0],
-                               plot1=pltr.create_adm_layoff_plot(dm.adm_layoffs.set_index("competênciamov")),
-                               plot2=pltr.create_net_plot(dm.net))
+                               plot1=pltr.create_adm_layoff_plot(dm.adm_layoffs_series.set_index("competênciamov")),
+                               plot2=pltr.create_net_plot(dm.net_series))
     return "Data inválida"
 
 
@@ -35,7 +35,10 @@ def sectorial(selected_date: str = "2024-02-01"):
                                   if str(date).split("T")[0] != selected_date],
                            stats=dm.data[dm.data["competênciamov"] == "2024-02-01"].groupby([
                                             "saldomovimentação", "Grupo"
-                                        ], as_index=True).sum().to_dict()['graudeinstrução']
+                                        ], as_index=True).sum().to_dict()['graudeinstrução'],
+                           plot1=pltr.create_adm_layoff_plot(
+                               dm.get_adm_layoffs_series(group="Agropecuária").set_index("competênciamov")),
+                           plot2=pltr.create_net_plot(dm.get_net_series(group="Agropecuária"))
                            )
 
 
@@ -64,15 +67,15 @@ def stats_sectorial_net(selected_date: str = "2024-02-01"):
     return jsonify(stats)
 
 
+@app.route('/plot/<chart_type>/<group>')
 @app.route('/plot/<chart_type>')
-def update_chart(chart_type: str):
+def update_chart(chart_type: str, group: str = None):
     # Dynamically update the chart based on the selected chart type
-
-    #if chart_type == 'short_open_close':  # Short Open Close
-    #    fig = pltr.create_open_close_short_plot(dm.get_short_time_series(symbol), symbol)
-    #else:  # chart_type == 'short_series':
-    # Default Short Time Series
-    fig = pltr.create_net_plot(dm.net)
+    if chart_type == "admlayoff":
+        fig = pltr.create_adm_layoff_plot(dm.get_adm_layoffs_series(group=group).set_index("competênciamov"))
+    # Default
+    else:
+        fig = pltr.create_net_plot(dm.get_net_series(group=group))
 
     return jsonify({'plot_html': fig})
 

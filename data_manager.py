@@ -33,8 +33,12 @@ data["Grupo"] = data["seção"].apply(lambda x: big_group[x] if x in big_group e
 cities = data["município"].apply(lambda x: x.split("Pb-")[1]).unique()
 
 
-def get_adm_layoffs_series(df):
-    g = df.groupby(["competênciamov", "saldomovimentação"], as_index=False).sum()
+def get_adm_layoffs_series(df: pd.DataFrame = data, group: str = None) -> pd.DataFrame:
+    if group is not None:
+        g = df[df["Grupo"] == group].groupby(["competênciamov", "saldomovimentação"], as_index=False).sum()
+    else:
+        g = df.groupby(["competênciamov", "saldomovimentação"], as_index=False).sum()
+
     g["admissao"] = g["saldomovimentação"] * g["graudeinstrução"]
     g["demissao"] = g["saldomovimentação"] * g["graudeinstrução"] * -1
 
@@ -50,14 +54,23 @@ def get_adm_layoffs_series(df):
     return g
 
 
-adm_layoffs = get_adm_layoffs_series(data)
+def get_net_series(df: pd.DataFrame = data, group: str = None) -> pd.DataFrame:
+    if group is not None:
+        g2 = df[df["Grupo"] == group].astype({"competênciamov": str}).groupby(["competênciamov",
+                                                         "saldomovimentação"], as_index=False).sum()
+    else:
+        g2 = df.astype({"competênciamov": str}).groupby(["competênciamov",
+                                                         "saldomovimentação"], as_index=False).sum()
 
-g2 = data.astype({"competênciamov": str}).groupby(["competênciamov",
-                                                   "saldomovimentação"], as_index=False).sum()
-g2["graudeinstrução"] = g2["graudeinstrução"] * g2["saldomovimentação"]
+    g2["graudeinstrução"] = g2["graudeinstrução"] * g2["saldomovimentação"]
 
-net = g2.groupby("competênciamov").sum()["graudeinstrução"]
-net_dict = net.to_dict()
+    return g2.groupby("competênciamov").sum()["graudeinstrução"]
+
+
+adm_layoffs_series = get_adm_layoffs_series(data)
+net_series = get_net_series(data)
+
+net_dict = net_series.to_dict()
 
 sectors_stats = data[data["competênciamov"] == "2024-02-01"].groupby([
                         "saldomovimentação", "Grupo"
