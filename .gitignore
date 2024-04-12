@@ -1,0 +1,6 @@
+/data/caged_pb.csv
+/data/dicionario_dados.xlsx
+*.ipynb
+/.ipynb_checkpoints
+/.idea
+/venv
