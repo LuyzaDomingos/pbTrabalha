@@ -1,6 +1,8 @@
 /data/caged_pb.csv
-/data/dicionario_dados.xlsx
-*.ipynb
 /.ipynb_checkpoints
 /.idea
 /venv
+/.python-version
+*.tmp
+*.7z
+/__pycache__
