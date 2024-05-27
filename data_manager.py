@@ -27,7 +27,7 @@ big_group = {
 }
 
 data = pd.read_csv("data/caged_agregado.csv", index_col=0)
-data["competênciamov"] = pd.to_datetime(data["competênciamov"])
+# data["competênciamov"] = pd.to_datetime(data["competênciamov"])
 data["Grupo"] = data["seção"].apply(lambda x: big_group[x] if x in big_group else np.nan)
 
 cities = data["município"].apply(lambda x: x.split("Pb-")[1]).unique()
@@ -72,6 +72,15 @@ net_series = get_net_series(data)
 
 net_dict = net_series.to_dict()
 
-sectors_stats = data[data["competênciamov"] == "2024-02-01"].groupby([
-                        "saldomovimentação", "Grupo"
-                    ], as_index=True).sum().to_dict()["graudeinstrução"]
+# sectors_stats = data.groupby([
+#     "competênciamov", "saldomovimentação","Grupo"]).sum().to_dict()["graudeinstrução"]
+
+# sectors_stats = data[data["competênciamov"] == "2024-02-01"].groupby([
+#                         "saldomovimentação", "Grupo"
+#                     ], as_index=True).sum().to_dict()["graudeinstrução"]
+
+sectors_stats = data.groupby([
+    "competênciamov", "saldomovimentação","Grupo"]).sum().to_dict()["graudeinstrução"]
+
+# stats = dm.data.groupby(["competênciamov", "saldomovimentação", "Grupo"],
+#  as_index=True).sum().to_dict()["graudeinstrução"]

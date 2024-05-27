@@ -9,8 +9,9 @@ document.addEventListener("DOMContentLoaded", function() {
     var btSer = document.getElementById("btn-serv");
 
     $("#btn-adm").click(function() {
+        var selectedDate = document.getElementById("date-dropdown").value;
         $.ajax({
-            url: "/stats/sectorial/adm",
+            url: "/stats/sectorial/adm/" + selectedDate,
             type: "GET",
             success: function(response) {
                 btInd.innerHTML = "Indústria" + '<br><b>' + response["Indústria"] + '</b>';
@@ -26,8 +27,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     $("#btn-layoff").click(function() {
+        var selectedDate = document.getElementById("date-dropdown").value;
         $.ajax({
-            url: "/stats/sectorial/layoff",
+            url: "/stats/sectorial/layoff/"  + selectedDate,
             type: "GET",
             success: function(response) {
                 btInd.innerHTML = "Indústria" + '<br><b>' + response["Indústria"] + '</b>';
@@ -43,8 +45,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     $("#btn-net").click(function() {
+        var selectedDate = document.getElementById("date-dropdown").value;
         $.ajax({
-            url: "/stats/sectorial/net",
+            url: "/stats/sectorial/net/" + selectedDate,
             type: "GET",
             success: function(response) {
                 btInd.innerHTML = "Indústria" + '<br><b>' + response["Indústria"] + '</b>';
@@ -140,4 +143,15 @@ function updateChart(event, group) {
             console.error('Error updating chart:', status, error);
         }
     });
+}
+
+var lastSelected = '2024-02-01';
+function updateSectorPage() {
+    var selection = document.getElementById("date-dropdown").value;
+    if (selection === lastSelected) {
+        console.log('No update needed');
+        return false;
+    }
+    lastSelected = selection;
+    window.location.href = '/stats/sectorial/'+ category + '/' + selection ; // Isso vai redirecionar para /opcao1 ou /opcao2
 }
