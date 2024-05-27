@@ -45,26 +45,29 @@ def sectorial(selected_date: str = "2024-02-01"):
 @app.route('/stats/sectorial/adm/<selected_date>')
 @app.route('/stats/sectorial/adm/')
 def stats_sectorial_adm(selected_date: str = "2024-02-01"):
-    return jsonify({key[1]: val for key, val in dm.sectors_stats.items() if key[0] == 1})
+    return jsonify({key[2]: val for key, val in dm.sectors_stats.items() if key[0] == selected_date and key[1] == 1})
 
 
 @app.route('/stats/sectorial/layoff/<selected_date>')
 @app.route('/stats/sectorial/layoff/')
 def stats_sectorial_layoff(selected_date: str = "2024-02-01"):
-    return jsonify({key[1]: val for key, val in dm.sectors_stats.items() if key[0] == -1})
+    return jsonify({key[2]: val for key, val in dm.sectors_stats.items() if key[0] == selected_date and key[1] == -1})
 
 
 @app.route('/stats/sectorial/net/<selected_date>')
 @app.route('/stats/sectorial/net/')
 def stats_sectorial_net(selected_date: str = "2024-02-01"):
-    stats = dict()
+    net_stats = {}
     for key, val in dm.sectors_stats.items():
-        if key[1] not in stats:
-            stats[key[1]] = val * key[0]
-        else:
-            stats[key[1]] += val * key[0]
-
-    return jsonify(stats)
+        if key[0] == selected_date:
+            sector = key[2]
+            if sector not in net_stats:
+                net_stats[sector] = 0
+            if key[1] == 1:
+                net_stats[sector] += val
+            elif key[1] == -1:
+                net_stats[sector] -= val
+    return jsonify(net_stats)
 
 
 @app.route('/plot/<chart_type>/<group>')
