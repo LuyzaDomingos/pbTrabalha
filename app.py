@@ -53,7 +53,6 @@ def stats_sectorial_adm(selected_date: str = "2024-02-01"):
 def stats_sectorial_layoff(selected_date: str = "2024-02-01"):
     return jsonify({key[2]: val for key, val in dm.sectors_stats.items() if key[0] == selected_date and key[1] == -1})
 
-
 @app.route('/stats/sectorial/net/<selected_date>')
 @app.route('/stats/sectorial/net/')
 def stats_sectorial_net(selected_date: str = "2024-02-01"):
