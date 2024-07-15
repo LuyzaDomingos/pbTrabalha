@@ -1,3 +1,26 @@
-.card {
-    margin-bottom: 20px;
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('/static/images/painel_flask.png') no-repeat center center fixed;
+    background-size: cover;
+}
+.icon-container {
+    text-align: center;
+}
+.icon-container img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
+.icon-container a {
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
